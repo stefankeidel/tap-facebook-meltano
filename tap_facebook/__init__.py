@@ -465,9 +465,13 @@ class AdsInsights(Stream):
     def job_params(self):
         start_date = get_start(self, self.bookmark_key)
 
-        buffer_days = 28
-        if CONFIG.get('insights_buffer_days'):
-            buffer_days = int(CONFIG.get('insights_buffer_days'))
+        try:
+            buffer_days =  int(CONFIG.get('insights_buffer_days'))
+
+            if buffer_days < 0:
+                buffer_days = 28
+        except (ValueError, TypeError):
+            buffer_days = 28
 
         buffered_start_date = start_date.subtract(days=buffer_days)
 
