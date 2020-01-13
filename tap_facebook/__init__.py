@@ -77,6 +77,8 @@ LOGGER = singer.get_logger()
 
 CONFIG = {}
 
+STATE = {}
+
 class TapFacebookException(Exception):
     pass
 
@@ -636,7 +638,14 @@ def do_sync(account, catalog, state):
                         record = transformer.transform(message['record'], schema)
                         singer.write_record(stream.name, record, stream.stream_alias, time_extracted)
                     elif 'state' in message:
-                        singer.write_state(message['state'])
+                        if message['state'].get('bookmarks'):
+                            # Keep the global state in a global variable
+                            # and update it each time with each stream's state
+                            if STATE.get('bookmarks'):
+                                STATE['bookmarks'].update(message['state']['bookmarks'])
+                            else:
+                                STATE.update(message['state'])
+                            singer.write_state(STATE)
                     else:
                         raise TapFacebookException('Unrecognized message {}'.format(message))
 

@@ -1,3 +1,9 @@
+# tap-facebook - Meltano Version
+
+This is a Meltano maintained fork of [tap-facebook](https://github.com/singer-io/tap-facebook).
+
+Check `CHANGELOG-Meltano.md` for the additional updates introduced in this project and the version of [tap-facebook](https://github.com/singer-io/tap-facebook) used.
+
 # tap-facebook
 This is a [Singer](https://singer.io) tap that produces JSON-formatted data following the [Singer spec](https://github.com/singer-io/getting-started/blob/master/SPEC.md).
 
@@ -86,9 +92,20 @@ The properties file will indicate what streams and fields to replicate from the 
 You can provide JSON file that contains a date for the streams to force the application to only fetch data newer than those dates. If you omit the file it will fetch all data for the selected streams.
 
 ```json
-{"ads":"2017-01-01T00:00:00Z",
- "adcreative":"2017-01-01T00:00:00Z",
- "ads_insights":"2017-01-01T00:00:00Z"}
+{
+ "bookmarks":
+ {
+  "ads": {"updated_time": "2019-12-09T02:07:11-07:00"},
+  "adsets": {"updated_time": "2019-12-08T21:54:03-07:00"},
+  "campaigns": {"updated_time": "2019-12-20T09:37:49-07:00"},
+  "ads_insights": {"date_start": "2019-12-19T00:00:00+00:00"},
+  "ads_insights_age_and_gender": {"date_start": "2019-12-19T00:00:00+00:00"},
+  "ads_insights_country": {"date_start": "2019-12-19T00:00:00+00:00"},
+  "ads_insights_platform_and_device": {"date_start": "2019-12-19T00:00:00+00:00"},
+  "ads_insights_region": {"date_start": "2019-12-19T00:00:00+00:00"},
+  "ads_insights_dma": {"date_start": "2019-12-19T00:00:00+00:00"}
+ }
+}
 ```
 
 ### Run the Tap

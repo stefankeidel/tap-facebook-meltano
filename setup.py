@@ -3,9 +3,9 @@
 from setuptools import setup
 
 setup(name='tap-facebook',
-      version='1.8.2',
-      description='Singer.io tap for extracting data from the Facebook Ads API',
-      author='Stitch',
+      version='meltano.1.0.3',
+      description='Meltano Maintained Fork of tap_facebook - a tap for extracting data from the Facebook Ads API',
+      author='Meltano and Stitch',
       url='https://singer.io',
       classifiers=['Programming Language :: Python :: 3 :: Only'],
       py_modules=['tap_facebook'],
