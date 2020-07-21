@@ -504,7 +504,7 @@ class AdsInsights(Stream):
             is_async=True)
         status = None
         time_start = time.time()
-        sleep_time = 10
+        sleep_time = int(CONFIG.get('sleep_time', 10))
         while status != "Job Completed":
             duration = time.time() - time_start
             job = job.api_get()
