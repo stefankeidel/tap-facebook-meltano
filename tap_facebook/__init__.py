@@ -496,7 +496,7 @@ class AdsInsights(Stream):
             }
             buffered_start_date = buffered_start_date.add(days=1)
 
-    @retry_pattern(backoff.expo, (FacebookRequestError, InsightsJobTimeout), max_tries=5, factor=5)
+    @retry_pattern(backoff.expo, (FacebookRequestError, InsightsJobTimeout), max_tries=10, factor=10)
     def run_job(self, params):
         LOGGER.info('Starting adsinsights job with params %s', params)
         job = self.account.get_insights( # pylint: disable=no-member
@@ -544,7 +544,8 @@ class AdsInsights(Stream):
 
             min_date_start_for_job = None
             count = 0
-            for obj in job.get_result():
+            res = self.get_job_result(job)
+            for obj in res:
                 count += 1
                 rec = obj.export_all_data()
                 if not min_date_start_for_job or rec['date_stop'] < min_date_start_for_job:
@@ -560,6 +561,10 @@ class AdsInsights(Stream):
                         min_date_start_for_job = time_range['until']
             yield {'state': advance_bookmark(self, self.bookmark_key,
                                              min_date_start_for_job)} # pylint: disable=no-member
+
+    @retry_pattern(backoff.expo, (FacebookRequestError, InsightsJobTimeout), max_tries=10, factor=10)
+    def get_job_result(self, job):
+        return job.get_result()
 
 
 INSIGHTS_BREAKDOWNS_OPTIONS = {
