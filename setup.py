@@ -16,6 +16,7 @@ setup(name='tap-facebook',
           'facebook_business==5.0.4',
           'requests==2.20.0',
           'singer-python==5.8.1',
+          'ratelimiter>=1.2.0'
       ],
       extras_require={
           'dev': [

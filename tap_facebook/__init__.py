@@ -34,6 +34,8 @@ import facebook_business.adobjects.user as fb_user
 
 from facebook_business.exceptions import FacebookRequestError
 
+from ratelimiter import RateLimiter
+
 TODAY = pendulum.today()
 
 API = None
@@ -538,6 +540,8 @@ class AdsInsights(Stream):
         return job
 
     def __iter__(self):
+        rate_limiter = RateLimiter(max_calls=5, period=1)
+
         for params in self.job_params():
             with metrics.job_timer('insights'):
                 job = self.run_job(params)
@@ -546,11 +550,12 @@ class AdsInsights(Stream):
             count = 0
             res = self.get_job_result(job)
             for obj in res:
-                count += 1
-                rec = obj.export_all_data()
-                if not min_date_start_for_job or rec['date_stop'] < min_date_start_for_job:
-                    min_date_start_for_job = rec['date_stop']
-                yield {'record': rec}
+                with rate_limiter:
+                    count += 1
+                    rec = obj.export_all_data()
+                    if not min_date_start_for_job or rec['date_stop'] < min_date_start_for_job:
+                        min_date_start_for_job = rec['date_stop']
+                    yield {'record': rec}
             LOGGER.info('Got %d results for insights job', count)
 
             # when min_date_start_for_job stays None, we should
