@@ -540,7 +540,7 @@ class AdsInsights(Stream):
         return job
 
     def __iter__(self):
-        rate_limiter = RateLimiter(max_calls=5, period=1)
+        rate_limiter = RateLimiter(max_calls=1, period=2)
 
         for params in self.job_params():
             with metrics.job_timer('insights'):
